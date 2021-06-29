@@ -70,19 +70,21 @@ def send_messages(messages, servers_info):
 
         path = path[1:]
         for i in range(len(path)):
-            server_ip, server_port = servers_info[i].split(" ")
-            server_port = int(server_port).to_bytes(2, 'big')
+            server_ip, server_port = servers_info[i-1].split(" ")
+            server_port_bytes = int(server_port).to_bytes(2, 'big')
             temp_ip = b''
-            for num in server_ip:
+            ip_part = server_ip.split(".")
+            for num in ip_part:
                 temp_ip += int(num).to_bytes(1, 'big')
-            server_ip = temp_ip
-
-            plaintext = server_ip + server_port + ciphertext
+            server_ip_bytes = temp_ip
+            if i != len(path) - 1:
+                plaintext = server_ip_bytes + server_port_bytes + ciphertext
             ciphertext = encrypt_data(plaintext, path[i])
 
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect(server_ip, server_port)
+            print(server_ip)
+            s.connect((server_ip, int(server_port)))
             s.send(ciphertext)
             s.close()
         except ConnectionError:
