@@ -1,13 +1,14 @@
 # Shilat Givati, 206377038, Amit Sharabi, 323784298
 
+import base64
 import socket
-import time
 import sys
+import time
+
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.hashes import SHA256
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import base64
 
 if len(sys.argv) < 4:
     print("Invalid input")

@@ -13,6 +13,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
 
 
+# encrypt data by the server public key
 def encrypt_data(plaintext, server):
     pem_file = "pk" + server + ".pem"
     pem_file = open(pem_file, "r")
@@ -76,7 +77,7 @@ def send_messages(messages, servers_info):
             for num in ip_part:
                 temp_ip += int(num).to_bytes(1, 'big')
             server_ip_bytes = temp_ip
-            plaintext = server_ip_bytes + server_port_bytes + ciphertext
+            plaintext = server_ip_bytes + server_port_bytes + ciphertext  # chaining data
             ciphertext = encrypt_data(plaintext, path[i])
 
             server_ip, server_port = servers_info[int(path[i]) - 1].split(" ")
@@ -100,10 +101,12 @@ servers_file = open("ips.txt", "r")
 servers_info = servers_file.readlines()
 servers_file.close()
 
+# get all servers info
 for i in range(len(servers_info)):
     if servers_info[i][-1] == '\n':
         servers_info[i] = servers_info[i][:-1]
 
+# get all messages to send
 messages_by_round = {}
 for message in messages:
     m = message.split(" ")
@@ -113,14 +116,12 @@ for message in messages:
     else:
         messages_by_round[int(round)].append(message.replace('\n', ''))
 
-messages_by_round = sorted(messages_by_round.items())
+messages_by_round = sorted(messages_by_round.items())  # sort by round
 
 first_round = time.time()
 round = 0
 for message in messages_by_round:
-    time.sleep(60 * (message[0] - round))
+    time.sleep(60 * (message[0] - round))  # wait for next round
     round = message[0]
     if message[0] == round:
         send_messages(message[1], servers_info)
-    # while time.time() <= 60 * round + first_round:
-    #     continue
