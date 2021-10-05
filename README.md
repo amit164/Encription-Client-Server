@@ -56,7 +56,7 @@ The receiving client decrypts the encryption (with the **symmetric key**) and pr
 1. Open the terminal
 2. Clone the project by:
 	```
-	$ git clone https://github.com/amit164/Mix-servers.git
+	$ git clone https://github.com/amit164/Encription-Client-Server.git
 	```	
 3. Run the receiver client:
 	```
